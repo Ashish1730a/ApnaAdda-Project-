@@ -11,6 +11,7 @@ const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema, reviewSchema } = require("./Schema.js");
 const Reviews = require("./models/review.js");
+const listings = require("./routes/listing.js")
 
 // Connect to MongoDB database
 main()
@@ -37,14 +38,7 @@ app.get("/", (req, res) => {
   res.send("Hi, I am root");
 });
 
-const validateListing = (req, res, next) => {
-  let { error } = listingSchema.validate(req.body);
-  if (error) {
-    throw new ExpressError(400, error);
-  } else {
-    next();
-  }
-};
+
 
 const validateReview = (req, res, next) => {
   let { error } = reviewSchema.validate(req.body);
@@ -55,86 +49,7 @@ const validateReview = (req, res, next) => {
   }
 };
 
-// index route
-app.get(
-  "/listings",
-  wrapAsync(async (req, res) => {
-    allListing = await Listing.find({});
-    res.render("listings/index.ejs", { allListing });
-  })
-);
-
-// new route
-app.get("/listings/new", (req, res) => {
-  res.render("listings/new.ejs");
-});
-
-// create route
-app.post(
-  "/listings",
-  validateListing,
-  wrapAsync(async (req, res, next) => {
-    const newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.render("listings/show.ejs", { listing: newListing });
-  })
-);
-
-// show route
-app.get(
-  "/listings/:id",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
-    res.render("listings/show.ejs", { listing });
-  })
-);
-
-// Edit route
-app.get(
-  "/listings/:id/edit",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id);
-    res.render("listings/edit.ejs", { listing });
-  })
-);
-
-// Update route
-// Update route
-app.put(
-  "/listings/:id",
-  validateListing,
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-
-    // Normal fields update
-    let updatedData = req.body.listing;
-
-    // Agar user ne image URL diya hai to usse object banake save karo
-    if (updatedData.image) {
-      updatedData.image = {
-        filename: "listingimage",
-        url: updatedData.image,
-      };
-    }
-
-    await Listing.findByIdAndUpdate(id, updatedData, { runValidators: true });
-
-    res.redirect(`/listings/${id}`);
-  })
-);
-
-// Delete route
-app.delete(
-  "/listings/:id",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    let deletedListing = await Listing.findByIdAndDelete(id);
-    console.log(deletedListing);
-    res.redirect("/listings");
-  })
-);
+app.use("/listing", listings)
 
 // Reviews
 // Post Route
