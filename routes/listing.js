@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const wrapAsync = require('../utils/wrapAsync');
 const ExpressError = require("../utils/ExpressError.js")
-const {listingSchema, reviewSchema} = require("../schema.js");
-const Listing = require("../models/listing.js")
+const {listingSchema, reviewSchema} = require("../Schema.js");
+const Listing = require("../models/listing.js");
 
 
 const validateListing = (req, res, next) => {
@@ -47,7 +47,8 @@ router.post(
   wrapAsync(async (req, res, next) => {
     const newListing = new Listing(req.body.listing);
     await newListing.save();
-    res.render("listings/show.ejs", { listing: newListing });
+    req.flash("success", "New listing created!")
+    res.redirect("listings");
   })
 );
 
