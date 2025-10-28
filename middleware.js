@@ -5,7 +5,13 @@ const {listingSchema, reviewSchema} = require("./Schema.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    req.session.redirectUrl = req.originalUrl;
+    let redirectUrl=req.originalUrl;
+
+    // ✅ If the request is a DELETE (or has _method=DELETE), redirect to the listing page instead
+    if (redirectUrl.includes("_method=DELETE")) {
+      redirectUrl = redirectUrl.split("/reviews")[0];
+    }
+    req.session.redirectUrl = req.redirectUrl;
     req.flash("error", "You must be logged in to create listing!");
     return res.redirect("/login");
   }
