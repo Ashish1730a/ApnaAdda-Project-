@@ -127,3 +127,12 @@ show-img {
   padding-left: 0;
   padding-right: 0;
 }
+
+.edit-img {
+  width: 300px;      /* chhoti kar de image */
+  height: auto;      /* aspect ratio maintain rahe */
+  border-radius: 10px;  /* thoda rounded look */
+  object-fit: cover;  /* image ko proper crop kare */
+  margin-bottom: 1rem;
+}
+
