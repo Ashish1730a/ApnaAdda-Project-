@@ -1,3 +1,8 @@
+if(process.env.NODE_ENV != "production"){
+  require("dotenv").config();
+}
+
+
 // Import required modules
 const express = require("express");
 const app = express();
