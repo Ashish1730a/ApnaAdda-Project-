@@ -6,8 +6,8 @@
           </b></b> </h3>
     </div>
     <div class="card col-6 offset-3 show-card listing-card">
-      <img src="<%= listing.image.url ? listing.image.url : '/images/default.jpg' %>"
-        class="card-img-top show-img" alt="listing_image">
+      <img src="<%= listing.image.url ? listing.image.url : '/images/default.jpg' %>" class="card-img-top show-img"
+        alt="listing_image">
       <div class="card-body">
         <p class="card-text">
           <i>Owned by <b>
@@ -76,31 +76,46 @@
               <button class="btn btn-outline-danger">Submit</button>
             </form>
             <% } %>
-              <hr>
-              <p><b>All Reviews</b></p>
-              <div class="row ">
-                <% for(let review of listing.reviews) { %>
-                  <div class="card col-5 ms-3 mb-3 ">
-                    <div class="card-body mt-2">
-                      <h5 class="card-tittle">
-                        <%= review.author.username %>
-                      </h5>
-                      <p class="card-text">
-                      <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
-                      </p>
-                      <p class="card-text">
-                        <%= review.comment %>
-                      </p>
+              <% if(listing.reviews.length>0) { %>
+                <hr>
+                <div class="row ">
+                  <p><b>All Reviews</b></p>
+                  <% for(let review of listing.reviews) { %>
+                    <div class="card col-5 ms-3 mb-3 ">
+                      <div class="card-body mt-2">
+                        <h5 class="card-tittle">
+                          <%= review.author.username %>
+                        </h5>
+                        <p class="card-text">
+                        <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
+                        </p>
+                        <p class="card-text">
+                          <%= review.comment %>
+                        </p>
 
-                      <br>
+                        <br>
+                      </div>
+                      <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mb-2"
+                        ?_ method="POST">
+                        <button class="btn btn-outline-dark">Delete</button>
+                      </form>
                     </div>
-                    <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mb-2" ?_
-                      method="POST">
-                      <button class="btn btn-outline-dark">Delete</button>
-                    </form>
-                  </div>
-                  <% } %>
-              </div>
+                    <% } %>
+                </div>
+                <% } %>
+          </div>
+          <div class="col-6 offset-3">
+            <h3>Where you'll be</h3>
+            <div id="map" style="height: 300px;"></div>
+
+            <script>
+              const map = L.map('map').setView([28.34702, 79.42193], 11);
+
+              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+              }).addTo(map);
+            </script>
+
           </div>
   </div>
   <br>

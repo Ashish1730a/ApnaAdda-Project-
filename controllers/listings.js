@@ -95,3 +95,22 @@ module.exports.destroyListing = async (req, res) => {
   req.flash("success", "Listing Delete!");
   res.redirect("/listings");
 };
+
+// controllers/listings.js
+module.exports.searchListings = async (req, res) => {
+  const search = req.query.q || "";
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.min(50, parseInt(req.query.limit) || 12);
+  const skip = (page - 1) * limit;
+
+  let query = {};
+  if (search.trim()) {
+    query = { title: { $regex: search.trim(), $options: "i" } };
+  }
+
+  const results = await Listing.find(query).skip(skip).limit(limit).lean();
+  const total = await Listing.countDocuments(query);
+  console.log("Search query:", req.query.q);
+  res.render("listings/searchResults.ejs", { listings: results, total, search });
+};
+

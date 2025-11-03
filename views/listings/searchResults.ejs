@@ -1,0 +1,33 @@
+<% layout("/layout/boilerplate") %>
+<div class="container mt-4">
+  <h2 class="mb-4">Search Results for "<%= search %>"</h2>
+
+  <% if (listings.length === 0) { %>
+    <div class="alert alert-warning">No listings found.</div>
+  <% } else { %>
+    <div class="row">
+      <% listings.forEach(listing => { %>
+        <div class="col-md-4 mb-4">
+          <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none text-dark">
+            <div class="card listing-card shadow-sm">
+              <img
+                src="<%= listing.image && listing.image.url ? listing.image.url : '/images/default.jpg' %>"
+                class="card-img-top"
+                alt="listing image"
+                style="height: 15rem; object-fit: cover;"
+              />
+              <div class="card-body">
+                <p class="card-text mb-1">
+                  <b><%= listing.title %></b><br />
+                  ₹<%= listing.price ? listing.price.toLocaleString('en-IN') : "N/A" %> / night
+                  <i class="tax-info"> &nbsp; +18% GST</i>
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
